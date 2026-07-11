@@ -11,7 +11,7 @@ const categories = [
   {
     name: "Haircare",
     href: "/shop?category=haircare",
-    image: "https://loremflickr.com/600/700/haircare,shampoo",
+    image: "https://picsum.photos/seed/hd-cat-haircare/600/700",
     description: "Shampoos, oils & repair treatments",
   },
   {
