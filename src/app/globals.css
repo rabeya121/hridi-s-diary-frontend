@@ -37,3 +37,18 @@ h1, h2, h3, h4, .font-display {
 .font-script {
   font-family: var(--font-script), cursive;
 }
+
+.hero-swiper .swiper-button-next,
+.hero-swiper .swiper-button-prev {
+  color: var(--clr-gold);
+}
+
+.hero-swiper .swiper-pagination-bullet {
+  background: var(--clr-ivory);
+  opacity: 0.5;
+}
+
+.hero-swiper .swiper-pagination-bullet-active {
+  background: var(--clr-gold);
+  opacity: 1;
+}
