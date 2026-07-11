@@ -3,6 +3,7 @@ import { Fraunces, Inter, Caveat } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { AuthProvider } from "@/context/AuthContext";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -41,9 +42,11 @@ export default function RootLayout({
       className={`${fraunces.variable} ${inter.variable} ${caveat.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-velvet text-ivory" suppressHydrationWarning>
-        <Navbar />
-        {children}
-        <Footer />
+        <AuthProvider>
+          <Navbar />
+          {children}
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );
