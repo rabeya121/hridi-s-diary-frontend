@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from "react-hot-toast";
 import Script from "next/script";
+import { CartProvider } from "@/context/CartContext";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -48,6 +49,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <AuthProvider>
+          <CartProvider>
           <Toaster
             position="top-center"
             toastOptions={{
@@ -68,6 +70,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <Footer />
+          </CartProvider>
         </AuthProvider>
         <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
       </body>

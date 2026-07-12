@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Star, ShoppingBag } from "lucide-react";
+import { Star, ShoppingBag, Zap } from "lucide-react";
+import toast from "react-hot-toast";
 import { api } from "@/lib/api";
 import type { Product, ProductsResponse } from "@/lib/types";
 import ProductCard from "@/components/shop/ProductCard";
+import { useCart } from "@/context/CartContext";
 
 interface Review {
   _id: string;
@@ -19,7 +21,9 @@ interface Review {
 
 export default function ProductDetailsPage() {
   const params = useParams();
+  const router = useRouter();
   const id = params.id as string;
+  const { addToCart } = useCart();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -49,6 +53,30 @@ export default function ProductDetailsPage() {
 
     fetchData();
   }, [id]);
+
+  const handleAddToCart = () => {
+    if (!product) return;
+    addToCart({
+      id: product._id,
+      type: "product",
+      title: product.title,
+      image: product.images[0],
+      price: product.price,
+    });
+    toast.success(`${product.title} added to cart!`);
+  };
+
+  const handleBuyNow = () => {
+    if (!product) return;
+    addToCart({
+      id: product._id,
+      type: "product",
+      title: product.title,
+      image: product.images[0],
+      price: product.price,
+    });
+    router.push("/checkout");
+  };
 
   if (loading) {
     return <div className="min-h-[60vh] bg-velvet" />;
@@ -130,10 +158,24 @@ export default function ProductDetailsPage() {
               {product.shortDescription}
             </p>
 
-            <button className="mt-6 flex items-center gap-2 rounded-full bg-blush px-8 py-3 font-body font-semibold text-velvet transition hover:bg-blush-deep">
-              <ShoppingBag size={18} />
-              Add to Cart
-            </button>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <button
+                onClick={handleAddToCart}
+                disabled={product.stock === 0}
+                className="flex items-center justify-center gap-2 rounded-full border border-gold/40 px-8 py-3 font-body font-semibold text-gold transition hover:bg-gold hover:text-velvet disabled:opacity-40"
+              >
+                <ShoppingBag size={18} />
+                Add to Cart
+              </button>
+              <button
+                onClick={handleBuyNow}
+                disabled={product.stock === 0}
+                className="flex items-center justify-center gap-2 rounded-full bg-blush px-8 py-3 font-body font-semibold text-velvet transition hover:bg-blush-deep disabled:opacity-40"
+              >
+                <Zap size={18} />
+                Buy Now
+              </button>
+            </div>
 
             <p className="mt-3 font-body text-xs text-ivory/40">
               {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}

@@ -1,9 +1,13 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
 export const api = {
-  async get(endpoint: string) {
+  async get(endpoint: string, token?: string) {
     const res = await fetch(`${API_BASE_URL}${endpoint}`, {
       cache: "no-store",
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
     });
     if (!res.ok) {
       throw new Error(`API error: ${res.status}`);
@@ -33,6 +37,21 @@ export const api = {
       headers: {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
+    });
+    if (!res.ok) {
+      throw new Error(`API error: ${res.status}`);
+    }
+    return res.json();
+  },
+
+  async patch(endpoint: string, body: unknown, token?: string) {
+    const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify(body),
     });
     if (!res.ok) {
       throw new Error(`API error: ${res.status}`);
