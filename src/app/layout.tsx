@@ -4,6 +4,8 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { AuthProvider } from "@/context/AuthContext";
+import { Toaster } from "react-hot-toast";
+import Script from "next/script";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -41,12 +43,33 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${fraunces.variable} ${inter.variable} ${caveat.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-velvet text-ivory" suppressHydrationWarning>
+      <body
+        className="min-h-full flex flex-col bg-velvet text-ivory"
+        suppressHydrationWarning
+      >
         <AuthProvider>
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              style: {
+                background: "#3D1830",
+                color: "#F7F0E8",
+                border: "1px solid rgba(212, 175, 55, 0.3)",
+                fontFamily: "var(--font-inter)",
+              },
+              success: {
+                iconTheme: { primary: "#D4AF37", secondary: "#3D1830" },
+              },
+              error: {
+                iconTheme: { primary: "#E07A92", secondary: "#3D1830" },
+              },
+            }}
+          />
           <Navbar />
           {children}
           <Footer />
         </AuthProvider>
+        <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
       </body>
     </html>
   );

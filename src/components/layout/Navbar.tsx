@@ -2,13 +2,16 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Gift, Menu, X, ShoppingBag, User } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Gift, Menu, X, ShoppingBag, User, LogOut } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const router = useRouter();
 
-  // TODO: replace with real auth state later
-  const isLoggedIn = false;
+  const isLoggedIn = !!user;
 
   const loggedOutLinks = [
     { href: "/shop", label: "Shop" },
@@ -25,6 +28,12 @@ const Navbar = () => {
   ];
 
   const links = isLoggedIn ? loggedInLinks : loggedOutLinks;
+
+  const handleLogout = () => {
+    logout();
+    setIsOpen(false);
+    router.push("/");
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gold/20 bg-velvet/95 backdrop-blur-sm">
@@ -54,12 +63,21 @@ const Navbar = () => {
             <ShoppingBag size={20} />
           </Link>
           {isLoggedIn ? (
-            <Link href="/profile" className="text-ivory transition hover:text-blush">
-              <User size={20} />
-            </Link>
+            <div className="flex items-center gap-4">
+              <span className="flex items-center gap-2 font-body text-sm text-ivory">
+                <User size={18} className="text-gold" />
+                {user?.name.split(" ")[0]}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1 font-body text-sm text-ivory transition hover:text-blush"
+              >
+                <LogOut size={18} />
+              </button>
+            </div>
           ) : (
             <Link
-              href="/login"
+              href="/auth/login"
               className="rounded-full bg-blush px-5 py-2 font-body text-sm font-semibold text-velvet transition hover:bg-blush-deep"
             >
               Login
@@ -90,9 +108,17 @@ const Navbar = () => {
               {link.label}
             </Link>
           ))}
-          {!isLoggedIn && (
+          {isLoggedIn ? (
+            <button
+              onClick={handleLogout}
+              className="mt-2 flex items-center gap-2 rounded-lg px-3 py-2 text-left font-body text-ivory transition hover:bg-velvet-light"
+            >
+              <LogOut size={18} />
+              Logout
+            </button>
+          ) : (
             <Link
-              href="/login"
+              href="/auth/login"
               onClick={() => setIsOpen(false)}
               className="mt-2 rounded-full bg-blush px-5 py-2 text-center font-body font-semibold text-velvet"
             >
