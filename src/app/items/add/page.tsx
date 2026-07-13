@@ -157,10 +157,9 @@ function AddItemForm() {
     </main>
   );
 }
-
 export default function AddItemPage() {
   return (
-    <ProtectedRoute>
+    <ProtectedRoute adminOnly>
       <AddItemForm />
     </ProtectedRoute>
   );

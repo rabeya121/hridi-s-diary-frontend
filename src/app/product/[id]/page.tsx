@@ -10,6 +10,7 @@ import { api } from "@/lib/api";
 import type { Product, ProductsResponse } from "@/lib/types";
 import ProductCard from "@/components/shop/ProductCard";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 
 interface Review {
   _id: string;
@@ -24,12 +25,17 @@ export default function ProductDetailsPage() {
   const router = useRouter();
   const id = params.id as string;
   const { addToCart } = useCart();
+  const { user, token } = useAuth();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [related, setRelated] = useState<Product[]>([]);
   const [activeImage, setActiveImage] = useState(0);
   const [loading, setLoading] = useState(true);
+
+  const [newRating, setNewRating] = useState(0);
+  const [newComment, setNewComment] = useState("");
+  const [submittingReview, setSubmittingReview] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,6 +82,40 @@ export default function ProductDetailsPage() {
       price: product.price,
     });
     router.push("/checkout");
+  };
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!user) {
+      toast.error("Please login to leave a review.");
+      return;
+    }
+    if (newRating === 0) {
+      toast.error("Please select a star rating.");
+      return;
+    }
+    if (!newComment.trim()) {
+      toast.error("Please write a comment.");
+      return;
+    }
+
+    setSubmittingReview(true);
+    try {
+      const data = await api.post(
+        "/reviews",
+        { productId: id, rating: newRating, comment: newComment },
+        token || undefined
+      );
+      setReviews((prev) => [data.review, ...prev]);
+      setNewRating(0);
+      setNewComment("");
+      toast.success("Review submitted!");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to submit review.");
+    } finally {
+      setSubmittingReview(false);
+    }
   };
 
   if (loading) {
@@ -221,6 +261,44 @@ export default function ProductDetailsPage() {
           <h2 className="font-display text-2xl italic text-ivory">
             Reviews ({reviews.length})
           </h2>
+
+          {/* Review submission form */}
+          <form
+            onSubmit={handleSubmitReview}
+            className="mb-6 mt-4 flex flex-col gap-3 rounded-xl border border-gold/20 bg-velvet-light p-5"
+          >
+            <p className="font-body text-sm font-semibold text-ivory">Write a Review</p>
+            <div className="flex gap-1">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setNewRating(star)}
+                  className="transition"
+                >
+                  <Star
+                    size={22}
+                    className={star <= newRating ? "fill-gold text-gold" : "text-ivory/20"}
+                  />
+                </button>
+              ))}
+            </div>
+            <textarea
+              rows={3}
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Share your experience with this product..."
+              className="rounded-xl border border-gold/30 bg-velvet px-4 py-3 font-body text-sm text-ivory placeholder:text-ivory/40 focus:border-gold focus:outline-none"
+            />
+            <button
+              type="submit"
+              disabled={submittingReview}
+              className="w-fit rounded-full bg-blush px-6 py-2 font-body text-sm font-semibold text-velvet transition hover:bg-blush-deep disabled:opacity-60"
+            >
+              {submittingReview ? "Submitting..." : "Submit Review"}
+            </button>
+          </form>
+
           {reviews.length === 0 ? (
             <p className="mt-3 font-body text-sm text-ivory/50">
               No reviews yet. Be the first to review this product.

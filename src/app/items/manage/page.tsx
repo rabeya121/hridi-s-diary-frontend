@@ -131,7 +131,7 @@ function ManageItemsContent() {
 
 export default function ManageItemsPage() {
   return (
-    <ProtectedRoute>
+    <ProtectedRoute adminOnly>
       <ManageItemsContent />
     </ProtectedRoute>
   );
