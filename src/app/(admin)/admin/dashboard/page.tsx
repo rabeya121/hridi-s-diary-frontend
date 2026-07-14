@@ -73,12 +73,12 @@ function AdminDashboardContent() {
   const totalOrders = orders.length;
   const totalProducts = products.length;
 
-  const statusCounts = ["pending", "processing", "delivered", "cancelled"].map(
-    (status) => ({
+  const statusCounts = ["pending", "processing", "delivered", "cancelled"]
+    .map((status) => ({
       name: status,
       value: orders.filter((o) => o.status === status).length,
-    })
-  );
+    }))
+    .filter((entry) => entry.value > 0);
 
   const categoryCounts = ["skincare", "haircare", "undergarments"].map((cat) => ({
     name: cat,
@@ -125,7 +125,9 @@ function AdminDashboardContent() {
                     cx="50%"
                     cy="50%"
                     outerRadius={90}
-                    label={(entry) => `${entry.name}: ${entry.value}`}
+                    label={({ name, value, percent }) =>
+                      `${name} (${value}) ${(percent! * 100).toFixed(0)}%`
+                    }
                   >
                     {statusCounts.map((entry) => (
                       <Cell key={entry.name} fill={STATUS_COLORS[entry.name]} />
