@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { ImagePlus } from "lucide-react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/context/AuthContext";
 import { api } from "@/lib/api";
+import { uploadImageToImgBB } from "@/lib/uploadImage";
 
 function AddItemForm() {
   const router = useRouter();
@@ -17,8 +19,18 @@ function AddItemForm() {
   const [fullDescription, setFullDescription] = useState("");
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +42,14 @@ function AddItemForm() {
 
     setLoading(true);
     try {
+      let imageUrl = "https://picsum.photos/seed/new-product/600/750"; // fallback
+
+      if (imageFile) {
+        setUploading(true);
+        imageUrl = await uploadImageToImgBB(imageFile);
+        setUploading(false);
+      }
+
       await api.post(
         "/products",
         {
@@ -39,7 +59,7 @@ function AddItemForm() {
           fullDescription,
           price: Number(price),
           stock: Number(stock),
-          images: imageUrl ? [imageUrl] : ["https://picsum.photos/seed/new-product/600/750"],
+          images: [imageUrl],
         },
         token || undefined
       );
@@ -49,6 +69,7 @@ function AddItemForm() {
       toast.error(err instanceof Error ? err.message : "Failed to add product.");
     } finally {
       setLoading(false);
+      setUploading(false);
     }
   };
 
@@ -134,15 +155,30 @@ function AddItemForm() {
 
           <div>
             <label className="mb-1 block font-body text-sm text-ivory/70">
-              Image URL (optional)
+              Product Image
             </label>
-            <input
-              type="text"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-              placeholder="https://..."
-              className="w-full rounded-xl border border-gold/30 bg-velvet px-4 py-3 font-body text-sm text-ivory placeholder:text-ivory/40 focus:border-gold focus:outline-none"
-            />
+            <label className="flex h-40 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gold/30 bg-velvet transition hover:border-gold/60">
+              {imagePreview ? (
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="h-full w-full rounded-xl object-cover"
+                />
+              ) : (
+                <>
+                  <ImagePlus className="text-gold/60" size={28} />
+                  <span className="font-body text-xs text-ivory/50">
+                    Click to upload from your device
+                  </span>
+                </>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+            </label>
           </div>
 
           <button
@@ -150,13 +186,14 @@ function AddItemForm() {
             disabled={loading}
             className="mt-2 rounded-full bg-blush py-3 font-body font-semibold text-velvet transition hover:bg-blush-deep disabled:opacity-60"
           >
-            {loading ? "Submitting..." : "Submit Product"}
+            {uploading ? "Uploading image..." : loading ? "Submitting..." : "Submit Product"}
           </button>
         </form>
       </div>
     </main>
   );
 }
+
 export default function AddItemPage() {
   return (
     <ProtectedRoute adminOnly>

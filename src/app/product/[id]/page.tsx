@@ -232,7 +232,7 @@ export default function ProductDetailsPage() {
         </div>
 
         {/* Specifications */}
-        {Object.values(product.specs).some(Boolean) && (
+        {product.specs && Object.values(product.specs).some(Boolean) && (
           <div className="mt-10">
             <h2 className="font-display text-2xl italic text-ivory">
               Specifications

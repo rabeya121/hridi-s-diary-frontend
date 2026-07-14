@@ -19,6 +19,7 @@ interface Order {
   totalPrice: number;
   address: string;
   phone: string;
+  paymentMethod: string;
   status: "pending" | "processing" | "delivered" | "cancelled";
   createdAt: string;
 }
@@ -100,8 +101,8 @@ function MyOrdersContent() {
                   ))}
                 </div>
 
-                <div className="mt-4 flex justify-between border-t border-gold/10 pt-4 font-body text-sm">
-                  <span className="text-ivory/70">Total</span>
+                <div className="mt-4 flex items-center justify-between border-t border-gold/10 pt-4 font-body text-sm">
+                  <span className="text-ivory/50">{order.paymentMethod}</span>
                   <span className="font-semibold text-gold">৳{order.totalPrice}</span>
                 </div>
               </div>

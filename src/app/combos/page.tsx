@@ -37,7 +37,9 @@ export default function CombosPage() {
       setLoading(true);
       try {
         const endpoint =
-          activeOccasion === "all" ? "/combos" : `/combos?occasion=${activeOccasion}`;
+          activeOccasion === "all"
+            ? "/combos"
+            : `/combos?occasion=${activeOccasion}`;
         const data = await api.get(endpoint);
         setCombos(data.combos);
       } catch (error) {
@@ -53,7 +55,9 @@ export default function CombosPage() {
     <main className="flex-1 bg-velvet px-6 py-12 md:px-12">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 text-center">
-          <span className="font-script text-2xl text-blush">Celebrate Every Occasion</span>
+          <span className="font-script text-2xl text-blush">
+            Celebrate Every Occasion
+          </span>
           <h1 className="font-display text-3xl italic text-ivory md:text-4xl">
             Gift Combos
           </h1>
@@ -78,7 +82,9 @@ export default function CombosPage() {
 
         {/* Combo grid */}
         {loading ? (
-          <p className="py-16 text-center font-body text-ivory/50">Loading combos...</p>
+          <p className="py-16 text-center font-body text-ivory/50">
+            Loading combos...
+          </p>
         ) : combos.length === 0 ? (
           <p className="py-16 text-center font-body text-ivory/50">
             No combos found for this occasion.
@@ -114,7 +120,7 @@ export default function CombosPage() {
                     {combo.description}
                   </p>
 
-                  <div className="mt-auto flex items-center gap-2 pt-4">
+                  <div className="mt-auto flex items-center gap-2 pt-2">
                     <span className="font-body text-lg font-semibold text-gold">
                       ৳{combo.comboPrice}
                     </span>
@@ -122,6 +128,9 @@ export default function CombosPage() {
                       ৳{combo.originalPrice}
                     </span>
                   </div>
+                  <span className="mt-3 block rounded-full border border-gold/40 py-2 text-center font-body text-sm font-medium text-gold transition group-hover:bg-gold group-hover:text-velvet">
+                    View Details
+                  </span>
                 </div>
               </Link>
             ))}

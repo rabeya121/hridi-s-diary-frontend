@@ -120,7 +120,7 @@ const Footer = () => {
             </li>
             <li className="flex items-center gap-2">
               <FaPhoneAlt size={14} className="shrink-0 text-gold" />
-              +880 1XXX-XXXXXX
+              +880 1747-019338
             </li>
             <li className="flex items-center gap-2">
               <FaEnvelope size={14} className="shrink-0 text-gold" />

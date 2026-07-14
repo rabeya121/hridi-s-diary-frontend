@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useCart } from "@/context/CartContext";
@@ -10,12 +11,13 @@ import { useAuth } from "@/context/AuthContext";
 import { api } from "@/lib/api";
 
 function CheckoutContent() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, clearCart, updateQuantity, removeFromCart } = useCart();
   const { user, token } = useAuth();
   const router = useRouter();
 
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"cod" | "card">("cod");
   const [placing, setPlacing] = useState(false);
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
@@ -32,30 +34,55 @@ function CheckoutContent() {
     }
 
     setPlacing(true);
-    try {
-      await api.post(
-        "/orders",
-        {
-          items: items.map((item) => ({
-            productId: item.type === "product" ? item.id : undefined,
-            title: item.title,
-            image: item.image,
-            price: item.price,
-            quantity: item.quantity,
-          })),
-          totalPrice,
-          address,
-          phone,
-        },
-        token || undefined
-      );
-      toast.success("Order placed successfully! 🎉");
-      clearCart();
-      router.push("/orders");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to place order.");
-    } finally {
-      setPlacing(false);
+
+    if (paymentMethod === "card") {
+      try {
+        const data = await api.post(
+          "/payments/create-checkout-session",
+          {
+            items: items.map((item) => ({
+              title: item.title,
+              image: item.image,
+              price: item.price,
+              quantity: item.quantity,
+            })),
+            address,
+            phone,
+          },
+          token || undefined
+        );
+        window.location.href = data.url;
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Failed to start checkout.");
+        setPlacing(false);
+      }
+    } else {
+      try {
+        await api.post(
+          "/orders",
+          {
+            items: items.map((item) => ({
+              productId: item.type === "product" ? item.id : undefined,
+              title: item.title,
+              image: item.image,
+              price: item.price,
+              quantity: item.quantity,
+            })),
+            totalPrice,
+            address,
+            phone,
+            paymentMethod: "Cash on Delivery",
+          },
+          token || undefined
+        );
+        toast.success("Order placed successfully! 🎉");
+        clearCart();
+        router.push("/orders");
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Failed to place order.");
+      } finally {
+        setPlacing(false);
+      }
     }
   };
 
@@ -76,7 +103,7 @@ function CheckoutContent() {
           {/* Delivery form */}
           <form
             onSubmit={handlePlaceOrder}
-            className="flex flex-col gap-4 rounded-2xl border border-gold/20 bg-velvet-light p-6"
+            className="flex h-fit flex-col gap-4 rounded-2xl border border-gold/20 bg-velvet-light p-6"
           >
             <h2 className="font-display text-xl italic text-ivory">Delivery Details</h2>
 
@@ -116,9 +143,37 @@ function CheckoutContent() {
               />
             </div>
 
-            <div className="rounded-xl border border-gold/20 bg-velvet px-4 py-3">
-              <p className="font-body text-xs text-ivory/50">Payment Method</p>
-              <p className="mt-1 font-body text-sm text-ivory">Cash on Delivery</p>
+            <div>
+              <label className="mb-2 block font-body text-sm text-ivory/70">
+                Payment Method *
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("cod")}
+                  className={`rounded-xl border px-4 py-3 text-left font-body text-sm transition ${
+                    paymentMethod === "cod"
+                      ? "border-gold bg-gold/10 text-ivory"
+                      : "border-gold/20 text-ivory/60 hover:border-gold/40"
+                  }`}
+                >
+                  <span className="block font-semibold">Cash on Delivery</span>
+                  <span className="text-xs text-ivory/50">Pay when it arrives</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("card")}
+                  className={`rounded-xl border px-4 py-3 text-left font-body text-sm transition ${
+                    paymentMethod === "card"
+                      ? "border-gold bg-gold/10 text-ivory"
+                      : "border-gold/20 text-ivory/60 hover:border-gold/40"
+                  }`}
+                >
+                  <span className="block font-semibold">Card Payment</span>
+                  <span className="text-xs text-ivory/50">Pay securely via Stripe</span>
+                </button>
+              </div>
             </div>
 
             <button
@@ -126,15 +181,19 @@ function CheckoutContent() {
               disabled={placing}
               className="mt-2 rounded-full bg-blush py-3 font-body font-semibold text-velvet transition hover:bg-blush-deep disabled:opacity-60"
             >
-              {placing ? "Placing Order..." : "Place Order"}
+              {placing
+                ? "Processing..."
+                : paymentMethod === "card"
+                  ? "Proceed to Payment"
+                  : "Place Order"}
             </button>
           </form>
 
-          {/* Order summary */}
-          <div className="rounded-2xl border border-gold/20 bg-velvet-light p-6">
+          {/* Order summary (editable) */}
+          <div className="h-fit rounded-2xl border border-gold/20 bg-velvet-light p-6">
             <h2 className="font-display text-xl italic text-ivory">Order Summary</h2>
 
-            <div className="mt-4 flex flex-col gap-3">
+            <div className="mt-4 flex flex-col gap-4">
               {items.map((item) => (
                 <div key={item.id} className="flex items-center gap-3">
                   <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg">
@@ -142,11 +201,36 @@ function CheckoutContent() {
                   </div>
                   <div className="flex-1">
                     <p className="line-clamp-1 font-body text-sm text-ivory">{item.title}</p>
-                    <p className="font-body text-xs text-ivory/50">Qty: {item.quantity}</p>
+                    <p className="font-body text-xs text-gold">৳{item.price}</p>
                   </div>
-                  <p className="font-body text-sm text-gold">
-                    ৳{item.price * item.quantity}
-                  </p>
+
+                  <div className="flex items-center gap-1 rounded-full border border-gold/30 px-1.5 py-1">
+                    <button
+                      type="button"
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      className="text-ivory hover:text-gold"
+                    >
+                      <Minus size={12} />
+                    </button>
+                    <span className="w-5 text-center font-body text-xs text-ivory">
+                      {item.quantity}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      className="text-ivory hover:text-gold"
+                    >
+                      <Plus size={12} />
+                    </button>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => removeFromCart(item.id)}
+                    className="text-ivory/50 transition hover:text-red-400"
+                  >
+                    <Trash2 size={16} />
+                  </button>
                 </div>
               ))}
             </div>

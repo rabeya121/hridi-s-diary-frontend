@@ -188,10 +188,12 @@ const Navbar = () => {
 
   const dashboardLinks = [
     { href: "/orders", label: "My Orders" },
-     ...(user?.role === "admin"
+    ...(user?.role === "admin"
       ? [
+          { href: "/admin/dashboard", label: "Dashboard Overview" },
           { href: "/items/add", label: "Add Item" },
           { href: "/items/manage", label: "Manage Items" },
+          { href: "/admin/combos/add", label: "Add Combo" },
           { href: "/admin/orders", label: "All Orders" },
         ]
       : []),
