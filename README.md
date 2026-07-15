@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hridi's Diary — Frontend
 
-## Getting Started
+A polished, full-stack e-commerce web app for **skincare, haircare, undergarments, and curated occasion gift combos** (Valentine's, Eid, Christmas, Puja). Built with **Next.js + TypeScript + Tailwind CSS**, featuring a custom "Velvet Gift Box" design system, live backend data, authentication, cart & checkout, Stripe payments, and admin management tools.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Live Deployment
+
+- **Live Site:** `https://hridis-diary-frontend.vercel.app` *(update with your actual URL)*
+- **Backend API:** [Hridi's Diary Backend](https://hridi-s-diary-backend.vercel.app/api)
+- **GitHub (Frontend):** *(add your repo link)*
+- **GitHub (Backend):** *(add your repo link)*
+
+---
+
+## 🛠 Tech Stack
+
+- **Framework:** Next.js (App Router) + TypeScript
+- **Styling:** Tailwind CSS v4 (custom "Velvet Gift Box" design tokens — velvet plum, gold, blush)
+- **Fonts:** Fraunces (display), Inter (body), Caveat (script accent)
+- **Charts:** Recharts (Admin Dashboard analytics)
+- **Carousel:** Swiper (Hero slider)
+- **Auth:** JWT-based auth via custom Express backend + Google Identity Services (OAuth)
+- **Payments:** Stripe Checkout (hosted payment page)
+- **Image Uploads:** ImgBB API
+- **Notifications:** react-hot-toast
+- **Icons:** lucide-react, react-icons
+
+---
+
+## ✨ Features
+
+- **Landing Page** — Hero slider, Categories, Featured Products, Occasion Gift Combos, Why Choose Us, Testimonials, Newsletter, FAQ
+- **Shop Page** — Search, category & price filters, sorting, pagination
+- **Product & Combo Details** — Image gallery, specs, reviews & ratings, related items
+- **Authentication** — Register/Login, Demo login, Google OAuth
+- **Cart & Checkout** — Add to cart, quantity management, Cash on Delivery or Stripe card payment
+- **Order History** — Customer "My Orders" + Admin "All Orders" with status management
+- **Admin Panel** — Sidebar-based dashboard with Add Item, Manage Items, Add Combo, Orders, and Recharts analytics (revenue, order status, product categories)
+- **Reviews & Ratings** — Star ratings and comments for both products and combos
+- **Fully Responsive** — Mobile, tablet, and desktop layouts throughout
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+├── app/
+│   ├── (admin)/         # Route group: admin sidebar layout (dashboard, orders, items, combos)
+│   ├── auth/            # Login & Register pages
+│   ├── shop/            # Explore/listing page
+│   ├── product/[id]/     # Product details
+│   ├── combos/           # Combo listing & details
+│   ├── cart/, checkout/   # Cart & checkout flow
+│   ├── orders/            # Customer order history
+│   ├── about/, contact/, blog/  # Static content pages
+│   └── page.tsx           # Landing page
+├── components/
+│   ├── layout/           # Navbar, Footer
+│   ├── home/             # Landing page sections
+│   ├── shop/             # ProductCard, SkeletonCard
+│   ├── auth/             # ProtectedRoute
+│   └── admin/            # AdminSidebar
+├── context/               # AuthContext, CartContext
+└── lib/                   # API client, types, image upload helper
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔑 Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env` (or `.env.local`) file in the root with:
 
-## Learn More
+```
+NEXT_PUBLIC_API_URL=https://your-backend-url.vercel.app/api
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_oauth_client_id
+NEXT_PUBLIC_IMGBB_API_KEY=your_imgbb_api_key
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🧑‍💻 Local Development
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm install
+npm run dev     # starts dev server on http://localhost:3000
+npm run build    # production build
+npm start        # runs production build
+```
 
-## Deploy on Vercel
+Make sure the backend server is running (locally or deployed) and `NEXT_PUBLIC_API_URL` points to it.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔐 Demo Credentials
+
+| Role | Email | Password |
+|---|---|---|
+| Customer | *(add demo customer email)* | *(add password)* |
+| Admin | *(add demo admin email)* | *(add password)* |
+
+Or use the **"Try Demo Login"** button on the login page.
+
+---
+
+## 📄 License
+
+This project was built as an academic full-stack TypeScript assignment.

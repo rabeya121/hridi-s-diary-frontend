@@ -15,7 +15,7 @@ const Footer = () => {
 
   return (
     <footer className="border-t border-gold/20 bg-velvet px-6 pt-14 pb-8 md:px-12">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
         {/* Brand */}
         <div>
           <Link href="/" className="flex items-center gap-2">
