@@ -11,6 +11,7 @@ import {
 
 const Footer = () => {
   const year = new Date().getFullYear();
+  
 
   return (
     <footer className="border-t border-gold/20 bg-velvet px-6 pt-14 pb-8 md:px-12">
