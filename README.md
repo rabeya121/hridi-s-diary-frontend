@@ -6,10 +6,10 @@ A polished, full-stack e-commerce web app for **skincare, haircare, undergarment
 
 ## 🚀 Live Deployment
 
-- **Live Site:** `https://hridis-diary-frontend.vercel.app` *(update with your actual URL)*
+- **Live Site:** `https://hridis-diary-frontend.vercel.app` 
 - **Backend API:** [Hridi's Diary Backend](https://hridi-s-diary-backend.vercel.app/api)
-- **GitHub (Frontend):** *(add your repo link)*
-- **GitHub (Backend):** *(add your repo link)*
+- **GitHub (Frontend):** *(https://github.com/rabeya121/hridi-s-diary-frontend)*
+- **GitHub (Backend):** *(https://github.com/rabeya121/Hridi-s-diary-backend)*
 
 ---
 
@@ -98,7 +98,7 @@ Make sure the backend server is running (locally or deployed) and `NEXT_PUBLIC_A
 | Role | Email | Password |
 |---|---|---|
 | Customer | *(add demo customer email)* | *(add password)* |
-| Admin | *(add demo admin email)* | *(add password)* |
+| Admin | *(hriditest.@example.com)* | *(test1234)* |
 
 Or use the **"Try Demo Login"** button on the login page.
 
