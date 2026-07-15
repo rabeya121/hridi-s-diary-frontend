@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Mail, Lock, Gift } from "lucide-react";
+import { Mail, Lock, Gift, Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAuth } from "@/context/AuthContext";
 
@@ -21,6 +21,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const initializeGoogle = () => {
@@ -69,7 +70,9 @@ export default function LoginPage() {
       toast.success("Welcome back!");
       router.push("/");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Login failed. Please try again.");
+      toast.error(
+        err instanceof Error ? err.message : "Login failed. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -141,7 +144,10 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="relative">
-            <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/40" />
+            <Mail
+              size={18}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/40"
+            />
             <input
               type="email"
               placeholder="Email address"
@@ -152,14 +158,24 @@ export default function LoginPage() {
           </div>
 
           <div className="relative">
-            <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/40" />
+            <Lock
+              size={18}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/40"
+            />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-full border border-gold/30 bg-velvet py-3 pl-11 pr-4 font-body text-sm text-ivory placeholder:text-ivory/40 focus:border-gold focus:outline-none"
+              className="w-full rounded-full border border-gold/30 bg-velvet py-3 pl-11 pr-11 font-body text-sm text-ivory placeholder:text-ivory/40 focus:border-gold focus:outline-none"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-ivory/40 hover:text-ivory"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
 
           <button
@@ -181,7 +197,10 @@ export default function LoginPage() {
 
         <p className="mt-6 text-center font-body text-sm text-ivory/60">
           Don&apos;t have an account?{" "}
-          <Link href="/auth/register" className="font-semibold text-gold hover:underline">
+          <Link
+            href="/auth/register"
+            className="font-semibold text-gold hover:underline"
+          >
             Register
           </Link>
         </p>

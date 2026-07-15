@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Mail, Lock, User, Gift } from "lucide-react";
+import { Mail, Lock, User, Gift, Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAuth } from "@/context/AuthContext";
 
@@ -23,6 +23,8 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     const initializeGoogle = () => {
@@ -51,7 +53,9 @@ export default function RegisterPage() {
       toast.success("Signed up with Google!");
       router.push("/");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Google sign-up failed.");
+      toast.error(
+        err instanceof Error ? err.message : "Google sign-up failed.",
+      );
     } finally {
       setLoading(false);
     }
@@ -81,7 +85,11 @@ export default function RegisterPage() {
       toast.success("Account created successfully!");
       router.push("/");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Registration failed. Please try again.");
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "Registration failed. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -140,7 +148,10 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="relative">
-            <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/40" />
+            <User
+              size={18}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/40"
+            />
             <input
               type="text"
               placeholder="Full name"
@@ -151,7 +162,10 @@ export default function RegisterPage() {
           </div>
 
           <div className="relative">
-            <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/40" />
+            <Mail
+              size={18}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/40"
+            />
             <input
               type="email"
               placeholder="Email address"
@@ -162,25 +176,45 @@ export default function RegisterPage() {
           </div>
 
           <div className="relative">
-            <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/40" />
+            <Lock
+              size={18}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/40"
+            />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password (min. 6 characters)"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-full border border-gold/30 bg-velvet py-3 pl-11 pr-4 font-body text-sm text-ivory placeholder:text-ivory/40 focus:border-gold focus:outline-none"
+              className="w-full rounded-full border border-gold/30 bg-velvet py-3 pl-11 pr-11 font-body text-sm text-ivory placeholder:text-ivory/40 focus:border-gold focus:outline-none"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-ivory/40 hover:text-ivory"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
 
           <div className="relative">
-            <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/40" />
+            <Lock
+              size={18}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/40"
+            />
             <input
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full rounded-full border border-gold/30 bg-velvet py-3 pl-11 pr-4 font-body text-sm text-ivory placeholder:text-ivory/40 focus:border-gold focus:outline-none"
+              className="w-full rounded-full border border-gold/30 bg-velvet py-3 pl-11 pr-11 font-body text-sm text-ivory placeholder:text-ivory/40 focus:border-gold focus:outline-none"
             />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-ivory/40 hover:text-ivory"
+            >
+              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
 
           <button
@@ -194,7 +228,10 @@ export default function RegisterPage() {
 
         <p className="mt-6 text-center font-body text-sm text-ivory/60">
           Already have an account?{" "}
-          <Link href="/auth/login" className="font-semibold text-gold hover:underline">
+          <Link
+            href="/auth/login"
+            className="font-semibold text-gold hover:underline"
+          >
             Login
           </Link>
         </p>
