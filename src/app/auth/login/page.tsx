@@ -162,19 +162,21 @@ export default function LoginPage() {
               size={18}
               className="absolute left-4 top-1/2 -translate-y-1/2 text-ivory/40"
             />
+
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-full border border-gold/30 bg-velvet py-3 pl-11 pr-11 font-body text-sm text-ivory placeholder:text-ivory/40 focus:border-gold focus:outline-none"
+              className="w-full rounded-full border border-gold/30 bg-velvet py-3 pl-11 pr-14 font-body text-sm text-ivory placeholder:text-ivory/40 focus:border-gold focus:outline-none"
             />
+
             <button
               type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-ivory/40 hover:text-ivory"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-4 top-1/2 z-10 -translate-y-1/2 cursor-pointer text-gold hover:text-blush"
             >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
 
